@@ -5,7 +5,8 @@ Python in the notebook; Linux terminal programs and subprocesses use the
 separate temporary v86 environment and are not the Pyodide kernel.
 New notebooks start with an editable example that calculates the mean of
 measurements. Run it with Shift+Enter or the notebook's Run button. The
-collapsible getting-started guide explains this and the storage boundary.
+collapsible getting-started guide explains this and the storage boundary. The
+file chooser defers automatic saves until a selection or cancellation finishes.
 
 Use **Open from My files** for a saved `.ipynb`, or choose a folder and select
 **Save to Files**. The notebook is saved to the account's browser storage and
