@@ -1,1 +1,1 @@
-.notebook-app{display:flex;flex-direction:column;min-height:0}.notebook-bar{display:flex;gap:8px;padding:6px}.notebook-bar input{flex:1;min-width:0}.notebook-app iframe{flex:1;min-height:200px;width:100%;border:0}.notebook-app .app-status{padding:4px}
+.notebook-app{display:flex;flex-direction:column;min-height:0}.notebook-bar{display:flex;gap:8px;padding:6px;flex-wrap:wrap}.notebook-bar input{flex:1;min-width:10rem}.notebook-bar button{min-height:44px;padding:.45rem .7rem}.notebook-app iframe{flex:1;min-height:200px;width:100%;border:0}.notebook-app .app-status{padding:4px}
