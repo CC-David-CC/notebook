@@ -3,6 +3,9 @@
 This app embeds JupyterLite with the browser-local Pyodide Python kernel. Run
 Python in the notebook; Linux terminal programs and subprocesses use the
 separate temporary v86 environment and are not the Pyodide kernel.
+New notebooks start with an editable example that calculates the mean of
+measurements. Run it with Shift+Enter or the notebook's Run button. The
+collapsible getting-started guide explains this and the storage boundary.
 
 Use **Open from My files** for a saved `.ipynb`, or choose a folder and select
 **Save to Files**. The notebook is saved to the account's browser storage and

@@ -1,3 +1,4 @@
 .notebook-app{display:flex;flex-direction:column;min-height:0}.notebook-bar{display:flex;gap:8px;padding:6px;flex-wrap:wrap}.notebook-bar input{flex:1;min-width:10rem}.notebook-bar button{min-height:44px;padding:.45rem .7rem}.notebook-app iframe{flex:1;min-height:200px;width:100%;border:0}.notebook-app .app-status{padding:4px}
 
 .notebook-file-warning{margin:4px 6px;padding:6px 8px;border-left:4px solid #a65300;background:#fff1d6;color:#4d2900}
+.notebook-guide{padding:4px 8px}.notebook-guide summary{cursor:pointer;min-height:32px}.notebook-guide p{max-width:75ch;margin:6px 0;line-height:1.4}
