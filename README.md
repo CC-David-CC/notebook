@@ -15,8 +15,11 @@ has a random name and is scoped to the account in the browser.
 JupyterLite executes notebook code with the website's browser permissions; do
 not open untrusted notebooks as though they were isolated from your account.
 Python packages and native processes are subject to Pyodide's browser limits.
-Temporary JupyterLite working copies may remain in browser storage; account
-files in My files are the supported persistent copies. Physical-phone behavior
+On ordinary window close, the app requests cleanup of that window’s temporary
+JupyterLite working copies and checkpoints. Cleanup is best effort: browser
+crashes, interrupted startup, older copies or future JupyterLite storage-layout
+changes can leave temporary data behind. Account files in My files are the
+supported persistent copies. Physical-phone behavior
 and all Jupyter extensions have not been verified.
 
 Build inputs are described in `app.json`, `requirements-build.txt` and
