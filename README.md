@@ -7,7 +7,7 @@ separate temporary v86 environment and are not the Pyodide kernel.
 Use **Open from My files** for a saved `.ipynb`, or choose a folder and select
 **Save to Files**. The notebook is saved to the account's browser storage and
 then synchronized with the server. After the first save, changes are saved
-automatically while the window remains open. Check the status for save errors
+automatically while the window remains open, including edits made during the first save. Check the status for save errors
 or conflicts. Upload files from the computer using Files first. Invalid files
 leave the current notebook available. The copy used internally by JupyterLite
 has a random name and is scoped to the account in the browser.
