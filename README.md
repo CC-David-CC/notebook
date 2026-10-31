@@ -24,3 +24,5 @@ and all Jupyter extensions have not been verified.
 
 Build inputs are described in `app.json`, `requirements-build.txt` and
 `prepare.py`. Generated JupyterLite assets are build inputs rather than source.
+
+A separate notice stays visible when My files detects that the linked notebook changed, is unavailable, or has conflicting copies. The notebook remains open; resolve conflicts in Files or save a separate copy. Automatic saves that retain a local conflict report that resolution is needed rather than claiming server sync. Detection depends on account-mirror synchronization. Local desktop, emulated-phone and 4K and live emulated-phone account tests cover conflicts during automatic saves, a conflict while a write is in progress, preserved copies, fresh-session recovery and listener cleanup.
