@@ -92,3 +92,8 @@ in that probe the kernel was not yet connected when each window closed. These
 runs did not reproduce the earlier intermittent errors and do not establish that
 other kernel-startup stages, physical devices, or heavier concurrency are safe.
 The local preview logged a client connection reset during browser shutdown.
+
+Opening or saving a notebook updates the desktop window title to the current
+My files filename, including after Save As. Desktop and emulated-phone account
+tests cover switching between an original and a separately saved copy; physical
+touch has not been verified.
