@@ -144,7 +144,10 @@ to My files** to try again. A successful save resumes autosaving. This retry is
 for the local My files write; server synchronization is a separate process and
 is not guaranteed by the retry message. Local registered-account desktop and
 emulated-phone tests inject transient and persistent write failures, verify the
-retry cap and quota stop, manually recover, sync and reopen. A desktop test also
-ran real Python. One phone-sized run encountered a kernel stuck in an unknown
-state, so that run does not establish Python execution on phones. Physical
-phones and real browser quota exhaustion remain unverified.
+retry cap and quota stop, manually recover, sync and reopen and run real Python. One earlier phone-sized run encountered a
+kernel stuck in an unknown state; its cause remains unproven. Two fresh repetitions
+of that scenario passed real Python, and separate desktop and emulated-phone
+two-window tests each passed two launch/run/close cycles with independent kernel
+state. The regression bounds execution waiting to 60 seconds. These successes do
+not establish that the intermittent stall is fixed. Physical phones and real
+browser quota exhaustion remain unverified.
