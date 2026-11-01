@@ -41,6 +41,12 @@ changes while the Save As dialog is open, the app cancels that save and asks
 the user to try again. Automatic saves continue for the linked notebook even
 when another tab has focus.
 
+The local invalid-launch candidate opens an editable starter notebook if a
+notebook opened from Files cannot be loaded. It keeps the error visible, leaves
+the original file untouched and clears the invalid restore reference. Desktop,
+emulated-phone and 4K account checks cover invalid and valid direct launches;
+physical touch remains unverified.
+
 Save As asks before replacing an existing notebook in My
 files. Cancelling leaves both the saved file and current edits intact; a file
 changed during confirmation is not overwritten. If the active notebook changes
