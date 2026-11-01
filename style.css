@@ -2,3 +2,5 @@
 
 .notebook-file-warning{margin:4px 6px;padding:6px 8px;border-left:4px solid #a65300;background:#fff1d6;color:#4d2900}
 .notebook-guide{padding:4px 8px}.notebook-guide summary{cursor:pointer;min-height:32px}.notebook-guide p{max-width:75ch;margin:6px 0;line-height:1.4}
+
+.notebook-data-copies{padding:4px 8px;max-height:7rem;overflow:auto;user-select:text;overflow-wrap:anywhere}.notebook-data-copies summary{cursor:pointer}.notebook-data-copies p{margin:4px 0}.notebook-data-copies code{user-select:all}
