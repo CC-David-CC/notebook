@@ -106,3 +106,15 @@ edited during file selection and confirmed that one discard action opens the
 saved notebook. Physical touch remains unverified.
 
 To use a CSV or other account file in Python, choose **File → Import data from My files**. Choose a working filename to create a browser-local copy; an existing Jupyter file is never intentionally overwritten by import. The **Imported data copies** panel shows the filename to use with `open()`. The account file is unchanged. Use **File → Save working file to My files** to copy an output file back; choosing an existing target asks before replacing it, and concurrent file changes are guarded. These are explicit snapshots, not a mounted drive or automatic synchronization. Working copies remain in the browser’s account-scoped Jupyter storage until removed there or browser data is cleared. Imports use the browser Web Locks API to coordinate simultaneous copies; concurrent changes made directly by Python or another tool are not locked. On another device, reimport the account file using the same working filename so notebook code still applies. Python-created working files also remain browser-local; save any output you need to My files. The 128 MiB file limit applies, but large base64 conversions can require substantially more browser memory.
+
+Python outputs inside workspace folders can be saved by entering a relative path,
+for example `results/mean.csv`. The suggested My files destination uses the
+output's filename; choose a different destination if needed. Absolute paths,
+parent traversal and Jupyter drive prefixes are rejected. Export takes a
+snapshot when the working file is read, so later Python writes require another
+export. Workspace folders remain browser-local and are not synchronized.
+In an isolated local registered-account test, desktop and emulated-phone
+sessions imported CSV data, used the real Pyodide kernel to calculate a mean
+and write a nested output, saved it to My files, checked invalid paths and
+cancelled replacement, and reopened the saved output in a fresh browser
+session. Physical-phone behavior has not been verified.
