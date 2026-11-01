@@ -84,3 +84,11 @@ server sync and retry; physical touch is unverified. An immediate-close test
 also observed a JupyterLite `Disposed` kernel error. Concurrent
 notebook tests observed a Pyodide missing `decorator` error and an invalid-file
 regression timed out; causes and wider lifecycle reliability remain open.
+
+A later isolated local rerun passed the invalid-file regression separately on
+both desktop and emulated-phone layouts, and two account recovery workflows
+passed concurrently. A three-window open/close probe per layout also passed;
+in that probe the kernel was not yet connected when each window closed. These
+runs did not reproduce the earlier intermittent errors and do not establish that
+other kernel-startup stages, physical devices, or heavier concurrency are safe.
+The local preview logged a client connection reset during browser shutdown.
