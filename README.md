@@ -129,3 +129,9 @@ sessions imported CSV data, used the real Pyodide kernel to calculate a mean
 and write a nested output, saved it to My files, checked invalid paths and
 cancelled replacement, and reopened the saved output in a fresh browser
 session. Physical-phone behavior has not been verified.
+
+A registered-account desktop and phone-sized browser test also opened a saved
+notebook, selected Pyodide, ran its actual calculation, and checked that the
+cell's output and execution count automatically saved, synchronized, and
+reopened in a fresh browser session. Physical-phone input and every output
+format are not covered by this test.
