@@ -151,3 +151,36 @@ two-window tests each passed two launch/run/close cycles with independent kernel
 state. The regression bounds execution waiting to 60 seconds. These successes do
 not establish that the intermittent stall is fixed. Physical phones and real
 browser quota exhaustion remain unverified.
+
+### Make a plot from a CSV file
+
+For a CSV in My files with a `value` column, choose **File → Import data from
+My files** and name the working copy `measure.csv`. In a Python cell, run:
+
+```python
+import csv
+from pathlib import Path
+import matplotlib.pyplot as plt
+
+with open('measure.csv', newline='') as source:
+    values = [float(row['value']) for row in csv.DictReader(source)]
+Path('results').mkdir(exist_ok=True)
+plt.plot(values, marker='o')
+plt.ylabel('Measurement')
+plt.savefig('results/plot.png')
+plt.show()
+```
+
+Use **File → Save working file to My files** and enter `results/plot.png` to
+save a snapshot in My files. Saving the notebook alone does not save that
+separate image, and editing the original CSV does not update its working copy.
+
+`tests/notebook-plot-account-review.test.mjs` exercises CSV import, real
+Matplotlib execution through the browser's Pyodide kernel, and PNG export in
+isolated registered desktop and phone-sized browser sessions. It verifies the
+PNG signature and byte-for-byte browser/server and fresh-session hashes,
+invalid output paths, and canceling replacement. It does not check the image's
+visual appearance, cell-editor input or a physical phone.
+Run it only against an isolated loopback preview by setting `CODI_TEST_URL`;
+`CODI_TEST_CDP` selects the Chrome DevTools endpoint (default port 19255).
+The isolated preview's test accounts and data should be removed after the run.
