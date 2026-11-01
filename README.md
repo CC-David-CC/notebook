@@ -40,3 +40,14 @@ My files save commands, or open a separate desktop Notebook window. If the tab
 changes while the Save As dialog is open, the app cancels that save and asks
 the user to try again. Automatic saves continue for the linked notebook even
 when another tab has focus.
+
+The local Save As candidate asks before replacing an existing notebook in My
+files. Cancelling leaves both the saved file and current edits intact; a file
+changed during confirmation is not overwritten. If the active notebook changes
+while confirmation is open, the operation is cancelled. Local desktop,
+emulated-phone and 4K account tests cover these cases, accepted replacement,
+server sync and fresh-session reopening; the previous source rejected an
+existing target without offering replacement. The notebook model edits in
+these tests were made through Jupyter's API, and a separate desktop regression
+ran the example with the real Pyodide kernel. Physical touch is unverified and
+this candidate is not live.
