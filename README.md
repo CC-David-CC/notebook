@@ -135,3 +135,16 @@ notebook, selected Pyodide, ran its actual calculation, and checked that the
 cell's output and execution count automatically saved, synchronized, and
 reopened in a fresh browser session. Physical-phone input and every output
 format are not covered by this test.
+
+If an automatic My files write fails with an `AbortError`, `NetworkError` or
+`TimeoutError`, the notebook retries up to three times with increasing delays.
+After those retries, or after a non-transient error such as quota exhaustion,
+automatic saves pause and the notebook stays marked unsaved; use **File → Save
+to My files** to try again. A successful save resumes autosaving. This retry is
+for the local My files write; server synchronization is a separate process and
+is not guaranteed by the retry message. Local registered-account desktop and
+emulated-phone tests inject transient and persistent write failures, verify the
+retry cap and quota stop, manually recover, sync and reopen. A desktop test also
+ran real Python. One phone-sized run encountered a kernel stuck in an unknown
+state, so that run does not establish Python execution on phones. Physical
+phones and real browser quota exhaustion remain unverified.
