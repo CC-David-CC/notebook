@@ -107,6 +107,17 @@ saved notebook. Physical touch remains unverified.
 
 To use a CSV or other account file in Python, choose **File → Import data from My files**. Choose a working filename to create a browser-local copy; an existing Jupyter file is never intentionally overwritten by import. The **Imported data copies** panel shows the filename to use with `open()`. The account file is unchanged. Use **File → Save working file to My files** to copy an output file back; choosing an existing target asks before replacing it, and concurrent file changes are guarded. These are explicit snapshots, not a mounted drive or automatic synchronization. Working copies remain in the browser’s account-scoped Jupyter storage until removed there or browser data is cleared. Imports use the browser Web Locks API to coordinate simultaneous copies; concurrent changes made directly by Python or another tool are not locked. On another device, reimport the account file using the same working filename so notebook code still applies. Python-created working files also remain browser-local; save any output you need to My files. The 128 MiB file limit applies, but large base64 conversions can require substantially more browser memory.
 
+Import rechecks the local source version after waiting for the import lock and
+again before creating the Jupyter working copy. If it changed or developed a
+conflict, select it again. The final check and Jupyter save use separate stores
+and are not atomic; a change afterward can still produce an older snapshot.
+Edits on another device that have not reached this browser can also be absent.
+Local registered-account desktop and emulated-phone tests changed a CSV while
+the filename dialog was open and while its import lock was held, checked that
+neither stale copy was created, then reimported it, ran real Python, saved and
+synced an output, and reopened it in a fresh browser. Physical touch and every
+possible timing remain unverified.
+
 Python outputs inside workspace folders can be saved by entering a relative path,
 for example `results/mean.csv`. The suggested My files destination uses the
 output's filename; choose a different destination if needed. Absolute paths,
