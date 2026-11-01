@@ -32,4 +32,4 @@ A separate notice stays visible when My files detects that the linked notebook c
 
 The app uses a desktop confirmation before discarding notebook edits when opening another file. If the notebook changes while confirmation is open, it preserves the newer edit and asks the user to try again. Registered-account desktop, emulated-phone and 4K-sized tests cover cancellation, that race, the example, sync and fresh-session reopening. The outer file toolbar still needs integration into Jupyter menus.
 
-The File-menu integration is a local candidate. Automated desktop mouse and emulated-phone touch tests cover the menu, account save and sync, cancellation, reopening, and closing/reopening a window without duplicate commands. Physical touch, Jupyter upgrades, and the fallback controls need additional verification before release.
+Automated desktop mouse and emulated-phone touch tests cover the File menu, account save and sync, cancellation, reopening, two independent windows, and closing/reopening without duplicate commands. A simulated unavailable menu leaves the fallback controls usable. Physical touch and compatibility with future Jupyter upgrades remain unverified.
