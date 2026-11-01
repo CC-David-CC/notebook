@@ -74,3 +74,13 @@ and left a kernel busy. A deterministic proxy test covers both return forms;
 local desktop and emulated-phone two-window tests and a phone-sized lifecycle
 run passed with the patch. These checks do not rule out other allocation or
 resource-pressure failures; physical devices remain unverified.
+
+A temporary read error or conflict while restoring a notebook retains its
+reference and offers **Retry saved notebook** once the starter is ready. Retry
+asks before discarding scratch edits; saving a scratch copy uses a distinct
+suggested path when the original was `/Notebook.ipynb`. A successful save or
+open switches the window to that file and clears the recovery target. Desktop and phone-sized account tests covered injected failure, cancellation, scratch save,
+server sync and retry; physical touch is unverified. An immediate-close test
+also observed a JupyterLite `Disposed` kernel error. Concurrent
+notebook tests observed a Pyodide missing `decorator` error and an invalid-file
+regression timed out; causes and wider lifecycle reliability remain open.
