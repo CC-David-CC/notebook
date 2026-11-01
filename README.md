@@ -57,3 +57,7 @@ existing target without offering replacement. The notebook model edits in
 these tests were made through Jupyter's API, and a separate desktop regression
 ran the example with the real Pyodide kernel. A public phone-sized account test
 also passed. Physical touch is unverified.
+
+Open and Save As update the notebook window’s file identity. Local desktop and
+emulated-phone checks cover opening the original and copy independently,
+reusing the correct window and server sync. Physical touch remains unverified.
