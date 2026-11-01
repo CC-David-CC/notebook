@@ -66,3 +66,11 @@ Closing the window while a notebook save is in progress asks for confirmation,
 even if the notebook was clean when saving began. Edits made during the save
 remain unsaved until the follow-up automatic save completes. A write already
 sent to storage may still complete after the window closes.
+
+The pinned JupyterLite 0.8.6 Pyodide proxy is patched during preparation to
+accept both synchronous and asynchronous `Atomics.waitAsync` results. Before
+this patch an observed fast response produced `value.then is not a function`
+and left a kernel busy. A deterministic proxy test covers both return forms;
+local desktop and emulated-phone two-window tests and a phone-sized lifecycle
+run passed with the patch. These checks do not rule out other allocation or
+resource-pressure failures; physical devices remain unverified.

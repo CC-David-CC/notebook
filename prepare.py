@@ -9,6 +9,7 @@ import subprocess
 import sys
 import tempfile
 import urllib.request
+from patch_kernel_wait import patch as patch_kernel_wait
 
 HERE = Path(__file__).resolve().parent
 COMMITMENT = '1016c31e39ce3764d9a418cbb491a392c802c1b86ccc1367f009f5c59bf8f5fd'
@@ -51,6 +52,7 @@ with tempfile.TemporaryDirectory(prefix='codi-jupyterlite-') as tmp:
     entry.update({'filename': comm.name, 'url': './' + comm.name, 'size': len(raw), 'digests': {'sha256': COMM_SHA, 'md5': md5}, 'md5_digest': md5, 'requires_python': '>=3.8'})
     data['comm'] = {'releases': {'0.2.3': [entry]}}; index.write_text(json.dumps(data, indent=2) + '\n')
     settings = source / 'jupyter-lite.json'; data = json.loads(settings.read_text()); data['jupyter-config-data']['litePluginSettings']['@jupyterlite/pyodide-kernel-extension:kernel']['pipliteUrls'] = ['./extensions/@jupyterlite/pyodide-kernel-extension/static/pypi/all.json?sha256=' + sha(index)]; settings.write_text(json.dumps(data, indent=2) + '\n')
+    patch_kernel_wait(source)
     destination = HERE / 'node_modules/jupyterlite'
     for asset in ASSETS:
         if not asset.startswith('node_modules/jupyterlite/'): continue
