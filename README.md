@@ -8,8 +8,7 @@ measurements. Run it with Shift+Enter or the notebook's Run button. The
 collapsible getting-started guide explains this and the storage boundary. The
 file chooser defers automatic saves until a selection or cancellation finishes.
 
-Use **Open from My files** for a saved `.ipynb`, or choose a folder and select
-**Save to Files**. The notebook is saved to the account's browser storage and
+Use Jupyter’s **File → Open from My files** for a saved `.ipynb`, or **File → Save to My files** to save it. Enter a path under My files when prompted. The original Jupyter file actions operate on temporary internal working copies; they do not replace saving to My files. If the desktop cannot integrate with Jupyter’s menu, its separate file controls remain available. The notebook is saved to the account's browser storage and
 then synchronized with the server. After the first save, changes are saved
 automatically while the window remains open, including edits made during the first save. Check the status for save errors
 or conflicts. Upload files from the computer using Files first. Invalid files
@@ -32,3 +31,5 @@ Build inputs are described in `app.json`, `requirements-build.txt` and
 A separate notice stays visible when My files detects that the linked notebook changed, is unavailable, or has conflicting copies. The notebook remains open; resolve conflicts in Files or save a separate copy. Automatic saves that retain a local conflict report that resolution is needed rather than claiming server sync. Detection depends on account-mirror synchronization. Local desktop, emulated-phone and 4K and live emulated-phone account tests cover conflicts during automatic saves, a conflict while a write is in progress, preserved copies, fresh-session recovery and listener cleanup.
 
 The app uses a desktop confirmation before discarding notebook edits when opening another file. If the notebook changes while confirmation is open, it preserves the newer edit and asks the user to try again. Registered-account desktop, emulated-phone and 4K-sized tests cover cancellation, that race, the example, sync and fresh-session reopening. The outer file toolbar still needs integration into Jupyter menus.
+
+The File-menu integration is a local candidate. Automated desktop mouse and emulated-phone touch tests cover the menu, account save and sync, cancellation, reopening, and closing/reopening a window without duplicate commands. Physical touch, Jupyter upgrades, and the fallback controls need additional verification before release.
