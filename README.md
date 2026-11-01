@@ -97,3 +97,10 @@ Opening or saving a notebook updates the desktop window title to the current
 My files filename, including after Save As. Desktop and emulated-phone account
 tests cover switching between an original and a separately saved copy; physical
 touch has not been verified.
+
+When a student edits while choosing a file, the desktop asks once before
+replacing those edits. If the notebook changes again during confirmation or
+loading, it still protects the newer edit. Local registered-account desktop
+and emulated-phone tests ran the actual Python mean, saved and synced it, then
+edited during file selection and confirmed that one discard action opens the
+saved notebook. Physical touch remains unverified.
