@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {pythonKernelArgs, waitForPython} from '../apps/system/notebook/kernel-start.mjs';
+import {pythonKernelArgs, waitForPython, requirePythonSpec} from '../apps/system/notebook/kernel-start.mjs';
 test('only default Python notebooks receive a kernel override',()=>{
   const arg={kernelPreference:{name:'python',autoStartDefault:true}};
   assert.deepEqual(pythonKernelArgs({metadata:{}},true),arg);
@@ -8,6 +8,7 @@ test('only default Python notebooks receive a kernel override',()=>{
   assert.deepEqual(pythonKernelArgs({metadata:{kernelspec:{name:'foreign'}}},true),{});
   assert.deepEqual(pythonKernelArgs({metadata:{}},false),{});
 });
+test('missing Python cannot silently fall back',()=>{assert.throws(()=>requirePythonSpec({kernelspecs:{other:{}}}),/unavailable/);assert.doesNotThrow(()=>requirePythonSpec({kernelspecs:{python:{}}}));});
 test('readiness waits for connected idle Python and bounds failure',async()=>{
   let time=0;const k={name:'python',status:'starting',connectionStatus:'connected'};
   const wait=waitForPython({sessionContext:{session:{kernel:k}}},{valid:()=>true,now:()=>time,delay:async()=>{time+=100;k.status='idle';}});
