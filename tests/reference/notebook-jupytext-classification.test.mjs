@@ -14,3 +14,5 @@ const starter={metadata:{kernelspec:{display_name:'Python (Pyodide)',language:'p
 const jl=structuredClone(starter);jl.metadata.language_info={codemirror_mode:{name:'python',version:3},file_extension:'.py',mimetype:'text/x-python',name:'python',nbconvert_exporter:'python',pygments_lexer:'ipython3',version:'3.8'};assert.equal(textLoss(jl),false);jl.metadata.language_info.version='3.14';assert.equal(textLoss(jl),true);
 
 const initializing=structuredClone(starter);initializing.metadata.language_info={name:''};assert.equal(textLoss(initializing),false);initializing.metadata.language_info.custom='data';assert.equal(textLoss(initializing),true);
+
+const generated=structuredClone(starter);generated.metadata.jupytext={main_language:'python',notebook_metadata_filter:'-all',cell_metadata_filter:'-all',text_representation:{extension:'.py',format_name:'light'}};assert.equal(textLoss(generated),false);generated.metadata.jupytext.formats='py,ipynb';assert.equal(textLoss(generated),true);
