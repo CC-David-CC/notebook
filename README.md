@@ -202,3 +202,9 @@ package: an isolated emulated-phone Python run returned `ModuleNotFoundError`.
 Its placeholder `widgetsnbextension` files alone do not provide interactive
 widgets. A separately packaged Python dependency and compatible frontend manager
 are required and are tracked independently of the narrow-layout change.
+
+The focused-layout test verifies single-window iframe/kernel-worker cleanup;
+it does not establish multi-window kernel isolation. A separate widget-runtime
+research test observed two host notebook windows restoring an unintended third
+background notebook/kernel. Per-window workspace/restoration isolation remains
+an open lifecycle issue and is being investigated separately.
