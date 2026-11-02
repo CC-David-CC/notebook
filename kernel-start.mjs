@@ -1,3 +1,7 @@
+export function requirePythonSpec(specs) {
+  if (!specs?.kernelspecs?.python) throw Error('Browser Python kernel is unavailable.');
+}
+
 // Explicit non-Python notebook kernels must retain Jupyter's native handling.
 export function pythonKernelArgs(content, isPythonText = false) {
   const spec = content?.metadata?.kernelspec;
