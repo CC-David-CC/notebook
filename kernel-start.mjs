@@ -11,6 +11,7 @@ export async function waitForPython(widget, {valid, timeout = 60000, now = Date.
   const until = now() + timeout;
   while (valid() && now() < until) {
     const kernel = widget?.sessionContext?.session?.kernel;
+    if (kernel?.status === 'dead') throw Error('Browser Python stopped during startup.');
     if (kernel?.name === 'python' && kernel.status === 'idle' && kernel.connectionStatus === 'connected') return;
     await delay(100);
   }
