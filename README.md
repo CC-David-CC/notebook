@@ -241,7 +241,10 @@ Changes to output or execution count alone do not schedule a save for either for
 **Do not release this branch yet.** Current JupyterLite temporary notebook and
 workspace storage still uses IndexedDB; a crash can leave notebook models and
 output there. The required per-window RAM-only storage and multi-window kernel
-isolation are being developed separately. The Python working-data workspace must
+isolation are being developed separately. The user accepts losing unsaved
+notebook edits and execution state if the session ends unexpectedly. Saved
+scripts and existing durable Python working data must remain available; this
+does not authorize deleting or silently making those files temporary. The Python working-data workspace must
 not silently lose existing user data when that storage changes. The packaging
 and conversion, save-as loss warnings, cancellation, multi-account isolation,
 phone, recovery, round-trip edge cases, and network behavior require additional
