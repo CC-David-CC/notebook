@@ -13,3 +13,6 @@ export function createJupytextClient(signal) {
 export function notebookFormat(path){return /\.light\.py$/i.test(path)?'py:light':/\.percent\.py$/i.test(path)?'py:percent':/\.ipynb$/i.test(path)?'ipynb':null;}
 export function authoredContent(notebook){return JSON.stringify((notebook.cells||[]).map(cell=>({type:cell.cell_type,source:Array.isArray(cell.source)?cell.source.join(''):cell.source||''})));}
 export function textLoss(notebook){return (notebook.cells||[]).some(cell=>cell.cell_type==='raw'||cell.attachments&&Object.keys(cell.attachments).length||cell.outputs?.length||Object.keys(cell.metadata||{}).length)||Object.keys(notebook.metadata||{}).length>0;}
+
+// Read only authored cells; avoid copying potentially large output payloads on every execution event.
+export function authoredModel(model){const cells=model.cells,result=[];for(let i=0;i<cells.length;i++){const cell=cells.get(i),source=cell.sharedModel?.getSource?.();if(typeof source!=='string'||typeof cell.type!=='string')return authoredContent(model.toJSON());result.push({type:cell.type,source});}return JSON.stringify(result);}
