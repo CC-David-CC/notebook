@@ -261,3 +261,10 @@ The two account tests create disposable accounts; point them only at an isolated
 preview and remove that preview's disposable state afterward. The worker test
 also requires a loopback Chromium debugging endpoint and locally prepared wheel
 assets. It executes the generated examples with the local `python3` interpreter.
+
+The research candidate starts the pinned browser Python kernel before enabling
+notebook interaction for new notebooks and Python text with no kernelspec.
+Its startup state is shown in the app; a 60-second deadline reports a failure,
+and closing the window cancels readiness polling. Explicit non-Python `.ipynb`
+kernelspecs retain Jupyter's kernel-selection behavior instead of being silently
+replaced. This does not qualify the remaining notebook storage work for release.
