@@ -235,7 +235,7 @@ This branch tests browser-local Jupytext conversion in a separate Pyodide worker
 The intended default is `.light.py`; `.percent.py` and `.ipynb` are explicit
 alternatives. Text saves contain source and structural comments, not notebook
 metadata or execution output. Use `.ipynb` to retain output and metadata.
-Changes to output or execution count alone do not schedule a text save. Ordinary
+Changes to output or execution count alone do not schedule a save for either format; use the explicit Save command to persist output in `.ipynb`. Ordinary
 `.py` files remain routed to Text but can be explicitly opened in Notebook.
 
 **Do not release this branch yet.** Current JupyterLite temporary notebook and
