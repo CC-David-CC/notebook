@@ -224,3 +224,9 @@ that has never loaded the site still needs a connection to obtain its assets;
 offline startup and persistence of cached assets have not been qualified.
 The phone layout and real multi-kernel behavior require integration tests before
 this research candidate is released.
+In an isolated signed-account preview, a Chromium desktop test exercised two
+notebook windows with separate current kernel IDs and slider state. Opening the
+second window also restored the first notebook as a background panel with its
+own third kernel; this is an unresolved resource and user-interface issue.
+Closing the second window preserved the first widget. A combined responsive
+candidate also passed an emulated-phone slider touch and Python button callback.
