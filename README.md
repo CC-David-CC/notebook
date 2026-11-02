@@ -247,3 +247,17 @@ and conversion, save-as loss warnings, cancellation, multi-account isolation,
 phone, recovery, round-trip edge cases, and network behavior require additional
 integration tests. The independently tested conversion probe is not evidence
 that the overall application is release-ready.
+
+Research regression commands, after preparing the pinned local runtime:
+
+```sh
+node tests/notebook-jupytext-classification.test.mjs
+PUPPETEER_CORE_PATH=/path/to/package.json node tests/notebook-jupytext-worker-review.test.mjs
+CODI_TEST_URL=http://127.0.0.1:19763/ PUPPETEER_CORE_PATH=/path/to/package.json node tests/notebook-jupytext-file-review.test.mjs
+CODI_TEST_URL=http://127.0.0.1:19763/ PUPPETEER_CORE_PATH=/path/to/package.json node tests/notebook-jupytext-ipynb-review.test.mjs
+```
+
+The two account tests create disposable accounts; point them only at an isolated
+preview and remove that preview's disposable state afterward. The worker test
+also requires a loopback Chromium debugging endpoint and locally prepared wheel
+assets. It executes the generated examples with the local `python3` interpreter.
