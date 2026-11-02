@@ -251,6 +251,14 @@ phone, recovery, round-trip edge cases, and network behavior require additional
 integration tests. The independently tested conversion probe is not evidence
 that the overall application is release-ready.
 
+Further isolated research on branch `research/notebook-reconciliation-20261102`
+(`c3d26d0a8`) preserved conflicting working-file versions and metadata in a
+recovery archive, then saved it through a signed test account. It is not wired
+into Notebook. Real older-tab migration, recovery discovery, account transitions,
+128 MiB support and bounded memory remain unresolved. Separate stale-handle
+tests identified an overwrite risk in the live notebook: avoid opening the same
+Python working file in multiple notebook windows until that is fixed.
+
 Research regression commands, after preparing the pinned local runtime:
 
 ```sh
