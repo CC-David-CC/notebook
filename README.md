@@ -222,8 +222,7 @@ This applies only to the pinned packages included in the catalog. Other Python
 packages may try PyPI, subject to browser network and security policy. A browser
 that has never loaded the site still needs a connection to obtain its assets;
 offline startup and persistence of cached assets have not been qualified.
-The phone layout and real multi-kernel behavior require integration tests before
-this research candidate is released.
+Physical-device testing and release qualification remain outstanding.
 In an isolated signed-account preview, a Chromium desktop test exercised two
 notebook windows with separate current kernel IDs and slider state. Opening the
 second window also restored the first notebook as a background panel with its
