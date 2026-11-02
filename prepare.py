@@ -9,11 +9,14 @@ import subprocess
 import sys
 import tempfile
 import urllib.request
+import zipfile
 from patch_kernel_wait import patch as patch_kernel_wait
 
 HERE = Path(__file__).resolve().parent
 COMMITMENT = '1016c31e39ce3764d9a418cbb491a392c802c1b86ccc1367f009f5c59bf8f5fd'
 COMM_SHA = 'c615d91d75f7f04f095b30d1c1711babd43bdc6419c1be9886a85f2f4e489417'
+WIDGETS_SHA = 'ecaca67aed704a338f88f67b1181b58f821ab5dc89c1f0f5ef99db43c1c2921e'
+LAB_WIDGETS_SHA = '45fa36d9c6422cf2559198e4db481aa243c7a32d9926b500781c830c80f7ecf8'
 ASSETS = json.loads((HERE / 'app.json').read_text())['assets']
 
 def sha(p):
@@ -51,8 +54,42 @@ with tempfile.TemporaryDirectory(prefix='codi-jupyterlite-') as tmp:
     index = pypi / 'all.json'; data = json.loads(index.read_text()); entry = dict(data['piplite']['releases'][next(iter(data['piplite']['releases']))][0]); raw = comm.read_bytes(); md5 = hashlib.md5(raw).hexdigest()
     entry.update({'filename': comm.name, 'url': './' + comm.name, 'size': len(raw), 'digests': {'sha256': COMM_SHA, 'md5': md5}, 'md5_digest': md5, 'requires_python': '>=3.8'})
     data['comm'] = {'releases': {'0.2.3': [entry]}}; index.write_text(json.dumps(data, indent=2) + '\n')
+    for name, version, expected in [('ipywidgets', '8.1.8', WIDGETS_SHA), ('jupyterlab_widgets', '3.0.16', LAB_WIDGETS_SHA)]:
+        subprocess.run([sys.executable, '-m', 'pip', 'download', '--no-deps', '--only-binary=:all:', name + '==' + version, '-d', str(tmp)], check=True)
+        wheel = tmp / (name + '-' + version + '-py3-none-any.whl')
+        if sha(wheel) != expected: raise RuntimeError('Unexpected widget wheel: ' + name)
+        shutil.copyfile(wheel, pypi / wheel.name)
+        raw = wheel.read_bytes(); digest = hashlib.md5(raw).hexdigest(); wheel_entry = dict(entry)
+        wheel_entry.update({'filename': wheel.name, 'url': './' + wheel.name, 'size': len(raw), 'digests': {'sha256': expected, 'md5': digest}, 'md5_digest': digest, 'requires_python': '>=3.8'})
+        data[name.replace('_', '-')] = {'releases': {version: [wheel_entry]}}
+    index.write_text(json.dumps(data, indent=2) + '\n')
+    # Make plain `import ipywidgets` load the pinned same-origin wheels through
+    # Pyodide's normal loadPackagesFromImports mechanism in each fresh kernel.
+    lock_path = py / 'pyodide-lock.json'; lock = json.loads(lock_path.read_text())
+    for name, version, wheel, expected, deps in [
+        ('comm', '0.2.3', comm, COMM_SHA, ['traitlets']),
+        ('ipywidgets', '8.1.8', tmp / 'ipywidgets-8.1.8-py3-none-any.whl', WIDGETS_SHA, ['comm', 'ipython', 'traitlets']),
+    ]:
+        if name in lock['packages']: raise RuntimeError('Unexpected upstream package in Pyodide lock: ' + name)
+        shutil.copyfile(wheel, py / wheel.name)
+        lock['packages'][name] = {'depends': deps, 'file_name': wheel.name, 'imports': [name], 'install_dir': 'site', 'name': name, 'package_type': 'package', 'sha256': expected, 'unvendored_tests': False, 'version': version}
+    lock_path.write_text(json.dumps(lock, indent=2) + '\n')
     settings = source / 'jupyter-lite.json'; data = json.loads(settings.read_text()); data['jupyter-config-data']['litePluginSettings']['@jupyterlite/pyodide-kernel-extension:kernel']['pipliteUrls'] = ['./extensions/@jupyterlite/pyodide-kernel-extension/static/pypi/all.json?sha256=' + sha(index)]; settings.write_text(json.dumps(data, indent=2) + '\n')
     patch_kernel_wait(source)
+    manager = source / 'extensions/@jupyter-widgets/jupyterlab-manager'
+    if not (manager / 'package.json').is_file(): raise RuntimeError('Widget frontend manager missing')
+    if json.loads((manager / 'package.json').read_text()).get('version') != '5.0.15':
+        raise RuntimeError('Unexpected widget manager version')
+    # The build environment supplies the extension. Bind its executable assets
+    # to the separately hash-verified wheel instead of trusting that environment.
+    with zipfile.ZipFile(tmp / 'jupyterlab_widgets-3.0.16-py3-none-any.whl') as wheel:
+        prefix = 'jupyterlab_widgets-3.0.16.data/data/share/jupyter/labextensions/@jupyter-widgets/jupyterlab-manager/'
+        for name in ASSETS:
+            root = 'node_modules/jupyterlite/extensions/@jupyter-widgets/jupyterlab-manager/static/'
+            if name.startswith(root):
+                relative = name.removeprefix('node_modules/jupyterlite/extensions/@jupyter-widgets/jupyterlab-manager/')
+                if (manager / relative).read_bytes() != wheel.read(prefix + relative):
+                    raise RuntimeError('Widget manager differs from pinned wheel: ' + relative)
     destination = HERE / 'node_modules/jupyterlite'
     for asset in ASSETS:
         if not asset.startswith('node_modules/jupyterlite/'): continue

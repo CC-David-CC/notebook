@@ -197,14 +197,30 @@ check rendered chart pixels and explicit notebook save, exercise touch controls
 and rotation, and close the notebook and its worker. Physical phones and future
 JupyterLab layout/API changes are not covered.
 
-The baseline JupyterLite bundle does not include the `ipywidgets` Python
+The currently live baseline does not include the `ipywidgets` Python
 package: an isolated emulated-phone Python run returned `ModuleNotFoundError`.
 Its placeholder `widgetsnbextension` files alone do not provide interactive
-widgets. A separately packaged Python dependency and compatible frontend manager
-are required and are tracked independently of the narrow-layout change.
+widgets. The research candidate below adds the Python dependency and compatible
+frontend manager; it has not yet been deployed.
 
 The focused-layout test verifies single-window iframe/kernel-worker cleanup;
 it does not establish multi-window kernel isolation. A separate widget-runtime
 research test observed two host notebook windows restoring an unintended third
 background notebook/kernel. Per-window workspace/restoration isolation remains
 an open lifecycle issue and is being investigated separately.
+### Interactive widgets (research candidate)
+
+The local Pyodide package lock includes `ipywidgets` 8.1.8 and `comm` 0.2.3.
+The JupyterLab widget manager 5.0.15 comes from `jupyterlab_widgets` 3.0.16.
+Each fresh kernel can use `import ipywidgets` without a separate install;
+packages and extension files are served by this site. The preparer verifies the
+wheel hashes and checks packaged manager scripts against the pinned wheel.
+Notices for the two widget wheels, including the manager's bundled JavaScript
+licenses, are included with this app.
+
+This applies only to the pinned packages included in the catalog. Other Python
+packages may try PyPI, subject to browser network and security policy. A browser
+that has never loaded the site still needs a connection to obtain its assets;
+offline startup and persistence of cached assets have not been qualified.
+The phone layout and real multi-kernel behavior require integration tests before
+this research candidate is released.
