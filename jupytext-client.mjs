@@ -18,7 +18,8 @@ export function textLoss(notebook){
  const metadata=notebook.metadata||{},kernel=metadata.kernelspec||{},language=metadata.language_info||{},mode=language.codemirror_mode||{};
  const isDefaultKernel=Object.keys(kernel).length===3&&kernel.display_name==='Python (Pyodide)'&&kernel.language==='python'&&kernel.name==='python';
  const isDefaultLanguage=(Object.keys(language).length===1&&language.name==='')||(Object.keys(language).length===7&&Object.keys(mode).length===2&&mode.name==='python'&&mode.version===3&&language.file_extension==='.py'&&language.mimetype==='text/x-python'&&language.name==='python'&&language.nbconvert_exporter==='python'&&language.pygments_lexer==='ipython3'&&language.version==='3.8');
- const meaningful=Object.keys(metadata).some(key=>key==='kernelspec'?!isDefaultKernel:key==='language_info'?!isDefaultLanguage:true);
+ const jt=metadata.jupytext||{},repr=jt.text_representation||{},isGeneratedJupytext=Object.keys(jt).every(key=>['main_language','notebook_metadata_filter','cell_metadata_filter','text_representation'].includes(key))&&jt.main_language==='python'&&jt.notebook_metadata_filter==='-all'&&jt.cell_metadata_filter==='-all'&&Object.keys(repr).length===2&&repr.extension==='.py'&&['light','percent'].includes(repr.format_name);
+ const meaningful=Object.keys(metadata).some(key=>key==='kernelspec'?!isDefaultKernel:key==='language_info'?!isDefaultLanguage:key==='jupytext'?!isGeneratedJupytext:true);
  return (notebook.cells||[]).some(cell=>cell.cell_type==='raw'||cell.attachments&&Object.keys(cell.attachments).length||cell.outputs?.length||Object.keys(cell.metadata||{}).length)||meaningful;
 }
 // Read only authored cells; avoid copying potentially large output payloads on every execution event.
