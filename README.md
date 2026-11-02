@@ -229,3 +229,21 @@ second window also restored the first notebook as a background panel with its
 own third kernel; this is an unresolved resource and user-interface issue.
 Closing the second window preserved the first widget. A combined responsive
 candidate also passed an emulated-phone slider touch and Python button callback.
+### Experimental Jupytext conversion (research only)
+
+This branch tests browser-local Jupytext conversion in a separate Pyodide worker.
+The intended default is `.light.py`; `.percent.py` and `.ipynb` are explicit
+alternatives. Text saves contain source and structural comments, not notebook
+metadata or execution output. Use `.ipynb` to retain output and metadata.
+Changes to output or execution count alone do not schedule a text save. Ordinary
+`.py` files remain routed to Text but can be explicitly opened in Notebook.
+
+**Do not release this branch yet.** Current JupyterLite temporary notebook and
+workspace storage still uses IndexedDB; a crash can leave notebook models and
+output there. The required per-window RAM-only storage and multi-window kernel
+isolation are being developed separately. The Python working-data workspace must
+not silently lose existing user data when that storage changes. The packaging
+and conversion, save-as loss warnings, cancellation, multi-account isolation,
+phone, recovery, round-trip edge cases, and network behavior require additional
+integration tests. The independently tested conversion probe is not evidence
+that the overall application is release-ready.

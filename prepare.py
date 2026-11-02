@@ -47,6 +47,13 @@ with tempfile.TemporaryDirectory(prefix='codi-jupyterlite-') as tmp:
         file = asset[len(prefix):]
         if file not in by_file: continue
         fetch('https://cdn.jsdelivr.net/pyodide/v314.0.6/full/' + file, py / file, by_file[file]['sha256'])
+    # Install pinned conversion-only wheels beside Pyodide for the private worker.
+    conversion_wheels = {'nbformat-5.11.1-py3-none-any.whl': 'cc6698fa75f4fab8755ead786317815f13a6fee3b53311c0abb1a8b51d52f7ec', 'jupytext-1.19.6-py3-none-any.whl': 'eb725d66841f1a91707bdcf4703b194a53151a060ecb3fd31d78139cc9ec090a', 'mdit_py_plugins-0.6.1-py3-none-any.whl': '214c82fb2ac524472ab6a5bcab1de80f73b50443e187f401bfd77efbc7c6481d', 'mdurl-0.1.2-py3-none-any.whl': '84008a41e51615a49fc9966191ff91509e3c40b939176e643fd50a5c2196b8f8', 'jupyter_core-5.9.1-py3-none-any.whl': 'ebf87fdc6073d142e114c72c9e29a9d7ca03fad818c5d300ce2adc1fb0743407', 'fastjsonschema-2.22.3-py3-none-any.whl': 'f670b443830b75aca3f00b75949efa20f4b2a80302ec7a21505c28dd54cffd43', 'markdown_it_py-4.2.0-py3-none-any.whl': '9f7ebbcd14fe59494226453aed97c1070d83f8d24b6fc3a3bcf9a38092641c4a'}
+    subprocess.run([sys.executable, '-m', 'pip', 'download', '--no-deps', '--only-binary=:all:', 'jupytext==1.19.6', 'markdown-it-py==4.2.0', 'mdit-py-plugins==0.6.1', 'mdurl==0.1.2', 'nbformat==5.11.1', 'fastjsonschema==2.22.3', 'jupyter-core==5.9.1', '-d', str(tmp)], check=True)
+    for filename, expected in conversion_wheels.items():
+        wheel = tmp / filename
+        if sha(wheel) != expected: raise RuntimeError('Unexpected Jupytext wheel: ' + filename)
+        shutil.copyfile(wheel, py / filename)
     subprocess.run([sys.executable, '-m', 'pip', 'download', '--no-deps', '--only-binary=:all:', 'comm==0.2.3', '-d', str(tmp)], check=True)
     comm = tmp / 'comm-0.2.3-py3-none-any.whl'
     if sha(comm) != COMM_SHA: raise RuntimeError('Unexpected comm wheel')
