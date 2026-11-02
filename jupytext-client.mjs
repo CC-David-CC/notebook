@@ -7,7 +7,7 @@ export function createJupytextClient(signal) {
  signal?.addEventListener('abort',close,{once:true});
  async function convert(action, value, format){
   if(closed||signal?.aborted)throw new DOMException('Notebook conversion cancelled','AbortError');
-  if(!worker){worker=new Worker(new URL('./jupytext-worker.mjs',import.meta.url),{type:'module'});worker.onmessage=({data})=>{const task=pending.get(data?.id);if(!task)return;pending.delete(data.id);clearTimeout(task.timer);data.error?task.reject(Error(data.error)):task.resolve(data.result);};worker.onerror=()=>stopWorker(Error('Notebook conversion worker failed.'));worker.onmessageerror=()=>stopWorker(Error('Notebook conversion worker returned an unreadable response.'));}
+  if(!worker){const current=worker=new Worker(new URL('./jupytext-worker.mjs',import.meta.url),{type:'module'});current.onmessage=({data})=>{if(worker!==current)return;const task=pending.get(data?.id);if(!task)return;pending.delete(data.id);clearTimeout(task.timer);data.error?task.reject(Error(data.error)):task.resolve(data.result);};current.onerror=()=>{if(worker===current)stopWorker(Error('Notebook conversion worker failed.'));};current.onmessageerror=()=>{if(worker===current)stopWorker(Error('Notebook conversion worker returned an unreadable response.'));};}
   return new Promise((resolve,reject)=>{const id=++next,timer=setTimeout(()=>stopWorker(Error('Notebook conversion timed out. Try again or save as .ipynb.')),120000);pending.set(id,{resolve,reject,timer});try{worker.postMessage({id,action,value,format});}catch(error){pending.delete(id);clearTimeout(timer);reject(error);}});
  }
  return {convert,close};
