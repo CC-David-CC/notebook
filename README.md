@@ -184,3 +184,21 @@ visual appearance, cell-editor input or a physical phone.
 Run it only against an isolated loopback preview by setting `CODI_TEST_URL`;
 `CODI_TEST_CDP` selects the Chrome DevTools endpoint (default port 19255).
 The isolated preview's test accounts and data should be removed after the run.
+
+On narrow notebook windows, a focused layout hides Jupyter's menu, sidebars and
+small notebook toolbar and offers touch-sized **Run cell**, **Add cell**, and
+**More controls**. More controls restores the native Jupyter menu and activity
+bars, including File → My files commands; closing it returns focus to the
+notebook. Resizing across the narrow threshold restores the desktop layout and
+previously open side panels. The layout uses JupyterLab shell APIs and a frame
+resize observer; if those APIs are unavailable it leaves the native interface
+in place. Emulated phone, desktop and 4K tests run a real Matplotlib cell,
+check rendered chart pixels and explicit notebook save, exercise touch controls
+and rotation, and close the notebook and its worker. Physical phones and future
+JupyterLab layout/API changes are not covered.
+
+The baseline JupyterLite bundle does not include the `ipywidgets` Python
+package: an isolated emulated-phone Python run returned `ModuleNotFoundError`.
+Its placeholder `widgetsnbextension` files alone do not provide interactive
+widgets. A separately packaged Python dependency and compatible frontend manager
+are required and are tracked independently of the narrow-layout change.

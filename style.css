@@ -4,3 +4,5 @@
 .notebook-guide{padding:4px 8px}.notebook-guide summary{cursor:pointer;min-height:32px}.notebook-guide p{max-width:75ch;margin:6px 0;line-height:1.4}
 
 .notebook-data-copies{padding:4px 8px;max-height:7rem;overflow:auto;user-select:text;overflow-wrap:anywhere}.notebook-data-copies summary{cursor:pointer}.notebook-data-copies p{margin:4px 0}.notebook-data-copies code{user-select:all}
+
+.notebook-mobile-controls{display:flex;gap:6px;padding:4px 6px;flex-wrap:wrap}.notebook-mobile-controls[hidden]{display:none}.notebook-mobile-controls button{min-height:44px;padding:.45rem .7rem;flex:1}.notebook-narrow:not(.notebook-show-tools) .notebook-guide:not([open]){display:none}
