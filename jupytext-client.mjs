@@ -14,6 +14,12 @@ export function createJupytextClient(signal) {
 }
 export function notebookFormat(path){return /\.light\.py$/i.test(path)?'py:light':/\.percent\.py$/i.test(path)?'py:percent':/\.ipynb$/i.test(path)?'ipynb':null;}
 export function authoredContent(notebook){return JSON.stringify((notebook.cells||[]).map(cell=>({type:cell.cell_type,source:Array.isArray(cell.source)?cell.source.join(''):cell.source||''})));}
-export function textLoss(notebook){return (notebook.cells||[]).some(cell=>cell.cell_type==='raw'||cell.attachments&&Object.keys(cell.attachments).length||cell.outputs?.length||Object.keys(cell.metadata||{}).length)||Object.keys(notebook.metadata||{}).length>0;}
+export function textLoss(notebook){
+ const metadata=notebook.metadata||{},kernel=metadata.kernelspec||{},language=metadata.language_info||{},mode=language.codemirror_mode||{};
+ const isDefaultKernel=Object.keys(kernel).length===3&&kernel.display_name==='Python (Pyodide)'&&kernel.language==='python'&&kernel.name==='python';
+ const isDefaultLanguage=(Object.keys(language).length===1&&language.name==='')||(Object.keys(language).length===7&&Object.keys(mode).length===2&&mode.name==='python'&&mode.version===3&&language.file_extension==='.py'&&language.mimetype==='text/x-python'&&language.name==='python'&&language.nbconvert_exporter==='python'&&language.pygments_lexer==='ipython3'&&language.version==='3.8');
+ const meaningful=Object.keys(metadata).some(key=>key==='kernelspec'?!isDefaultKernel:key==='language_info'?!isDefaultLanguage:true);
+ return (notebook.cells||[]).some(cell=>cell.cell_type==='raw'||cell.attachments&&Object.keys(cell.attachments).length||cell.outputs?.length||Object.keys(cell.metadata||{}).length)||meaningful;
+}
 // Read only authored cells; avoid copying potentially large output payloads on every execution event.
 export function authoredModel(model){const cells=model.cells,result=[];for(let i=0;i<cells.length;i++){const cell=cells.get(i),source=cell.sharedModel?.getSource?.();if(typeof source!=='string'||typeof cell.type!=='string')return authoredContent(model.toJSON());result.push({type:cell.type,source});}return JSON.stringify(result);}
