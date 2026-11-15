@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {pythonKernelArgs, waitForPython, requirePythonSpec} from '../apps/system/notebook/kernel-start.mjs';
+import {pythonKernelArgs, waitForPython, requirePythonSpec} from "../../kernel-start.mjs";
 test('only default Python notebooks receive a kernel override',()=>{
   const arg={kernelPreference:{name:'python',autoStartDefault:true}};
   assert.deepEqual(pythonKernelArgs({metadata:{}},true),arg);

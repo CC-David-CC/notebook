@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import {createJupytextClient} from '../apps/system/notebook/jupytext-client.mjs';
+import {createJupytextClient} from "../../jupytext-client.mjs";
 const instances=[];
 class FakeWorker {constructor(){this.terminated=false;instances.push(this)}postMessage(request){this.request=request}terminate(){this.terminated=true}}
 globalThis.Worker=FakeWorker;

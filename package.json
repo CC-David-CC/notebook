@@ -1,0 +1,6 @@
+{
+  "private": true,
+  "scripts": {
+    "test:reference": "node --test --test-reporter=tap tests/reference/*.test.mjs"
+  }
+}
