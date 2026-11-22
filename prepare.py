@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Prepare pinned browser-local JupyterLite assets. Generated files are ignored by Git."""
 from pathlib import Path
+import argparse
 import hashlib
 import json
 import re
@@ -27,6 +28,18 @@ def fetch(url, path, expected):
         shutil.copyfileobj(response, target)
     if sha(path) != expected:
         raise RuntimeError('Checksum mismatch: ' + path.name)
+
+parser = argparse.ArgumentParser(description=__doc__)
+parser.add_argument('--site', type=Path, help='create a new source-verified WebOS runtime package outside the checkout')
+site = parser.parse_args().site
+if site is not None:
+    site = site.resolve()
+    if site.exists() or site.is_relative_to(HERE):
+        parser.error('Select a new package directory outside the checkout.')
+    if subprocess.check_output(['git','status','--porcelain','--untracked-files=normal'], cwd=HERE):
+        parser.error('A clean source checkout is required for a release package.')
+    commit = subprocess.check_output(['git','rev-parse','HEAD'], cwd=HERE, text=True).strip()
+    tree = subprocess.check_output(['git','rev-parse','HEAD^{tree}'], cwd=HERE, text=True).strip()
 
 with tempfile.TemporaryDirectory(prefix='codi-jupyterlite-') as tmp:
     tmp = Path(tmp); tar = tmp / 'pyodide-core-314.0.6.tar.bz2'; source = tmp / 'site'; lite = tmp / 'empty'; lite.mkdir()
@@ -97,10 +110,36 @@ with tempfile.TemporaryDirectory(prefix='codi-jupyterlite-') as tmp:
                 relative = name.removeprefix('node_modules/jupyterlite/extensions/@jupyter-widgets/jupyterlab-manager/')
                 if (manager / relative).read_bytes() != wheel.read(prefix + relative):
                     raise RuntimeError('Widget manager differs from pinned wheel: ' + relative)
-    destination = HERE / 'node_modules/jupyterlite'
-    for asset in ASSETS:
-        if not asset.startswith('node_modules/jupyterlite/'): continue
-        rel = Path(asset).relative_to('node_modules/jupyterlite'); original = source / rel; target = destination / rel
-        if not original.is_file() or original.is_symlink(): raise RuntimeError('Missing JupyterLite asset: ' + str(rel))
-        target.parent.mkdir(parents=True, exist_ok=True); shutil.copyfile(original, target)
+    def copy_assets(output):
+        result = []
+        for name in ASSETS:
+            relative = Path(name)
+            if relative.is_absolute() or '..' in relative.parts:
+                raise RuntimeError('Invalid Notebook asset path')
+            if name.startswith('node_modules/jupyterlite/'):
+                original = source / relative.relative_to('node_modules/jupyterlite')
+            elif site:
+                original = HERE / relative
+            else:
+                continue
+            if not original.is_file() or original.is_symlink():
+                raise RuntimeError('Missing Notebook asset: ' + name)
+            target = output / relative
+            target.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copyfile(original, target)
+            result.append(dict(path=name, bytes=target.stat().st_size, sha256=sha(target)))
+        return result
+
+    if site:
+        site.parent.mkdir(parents=True, exist_ok=True)
+        with tempfile.TemporaryDirectory(dir=site.parent) as staging:
+            package = Path(staging) / 'site'
+            files = copy_assets(package)
+            receipt = dict(schema='webos-component-build/1', component='notebook',
+                           sourceCommit=commit, sourceTree=tree,
+                           inventorySHA256=sha(HERE / 'app.json'), files=files)
+            (package / 'component-build.json').write_text(json.dumps(receipt, indent=2) + '\n')
+            package.rename(site)
+    else:
+        copy_assets(HERE)
 print('Prepared JupyterLite 0.8.6 and local Pyodide 314.0.6.')
