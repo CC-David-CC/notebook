@@ -1,5 +1,12 @@
-export function requirePythonSpec(specs) {
-  if (!specs?.kernelspecs?.python) throw Error('Browser Python kernel is unavailable.');
+// The editor can register Python after its initial service promises resolve.
+export async function waitForPythonSpec(getSpecs, {valid, timeout = 30000,
+  now = performance.now.bind(performance), delay = ms => new Promise(resolve => setTimeout(resolve, ms))} = {}) {
+  const until = now() + timeout;
+  while (valid() && now() < until) {
+    if (getSpecs()?.kernelspecs?.python) return;
+    await delay(250);
+  }
+  if (valid()) throw Error('Browser Python kernel is unavailable.');
 }
 
 // Explicit non-Python notebook kernels must retain Jupyter's native handling.
