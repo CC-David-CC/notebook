@@ -6,3 +6,23 @@
 .notebook-data-copies{padding:4px 8px;max-height:7rem;overflow:auto;user-select:text;overflow-wrap:anywhere}.notebook-data-copies summary{cursor:pointer}.notebook-data-copies p{margin:4px 0}.notebook-data-copies code{user-select:all}
 
 .notebook-mobile-controls{display:flex;gap:6px;padding:4px 6px;flex-wrap:wrap}.notebook-mobile-controls[hidden]{display:none}.notebook-mobile-controls button{min-height:44px;padding:.45rem .7rem;flex:1}.notebook-narrow:not(.notebook-show-tools) .notebook-guide:not([open]){display:none}
+
+.notebook-start-message {
+  margin: 12px 12px 0;
+  color: var(--desktop-text, #f3f6f8);
+}
+
+.notebook-start-actions {
+  display: flex;
+  gap: 8px;
+  padding: 8px 16px;
+}
+
+.notebook-start-actions button {
+  min-height: 44px;
+  padding: .45rem .85rem;
+  border: 1px solid var(--desktop-border, #798793);
+  border-radius: 4px;
+  color: var(--desktop-text, #f3f6f8);
+  background: var(--desktop-raised, #353d46);
+}

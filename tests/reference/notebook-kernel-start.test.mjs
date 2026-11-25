@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {pythonKernelArgs, waitForPython, requirePythonSpec} from "../../kernel-start.mjs";
+import {pythonKernelArgs, waitForNotebookApp, waitForPython, requirePythonSpec} from "../../kernel-start.mjs";
 test('only default Python notebooks receive a kernel override',()=>{
   const arg={kernelPreference:{name:'python',autoStartDefault:true}};
   assert.deepEqual(pythonKernelArgs({metadata:{}},true),arg);
@@ -18,4 +18,29 @@ test('readiness waits for connected idle Python and bounds failure',async()=>{
 });
 test('closing a window cancels startup polling',async()=>{
   let active=true,calls=0;await waitForPython({}, {valid:()=>active,delay:async()=>{calls++;active=false;}});assert.equal(calls,1);
+});
+
+test('browser editor waits for both its contents service and open command', async () => {
+  let time = 0;
+  const app = {serviceManager:{contents:{}}, commands:{hasCommand: name => name==='docmanager:open' && time>=500}};
+  const result = await waitForNotebookApp(() => app, {
+    valid:()=>true, now:()=>time, delay:async ms=>{time+=ms;}
+  });
+  assert.equal(result, app);
+  assert.equal(time, 500);
+});
+
+test('a stalled notebook boot ends at its deadline and a closed window cancels the wait', async () => {
+  let time = 0;
+  await assert.rejects(waitForNotebookApp(() => undefined, {
+    valid:()=>true, now:()=>time, timeout:500, delay:async ms=>{time+=ms;}
+  }), /did not finish loading/);
+  assert.equal(time,500);
+  const cancelled=await waitForNotebookApp(() => assert.fail('Frame was already removed'),{valid:()=>false});
+  assert.equal(cancelled,undefined);
+});
+
+test('an inaccessible frame reports a startup error', async () => {
+  await assert.rejects(waitForNotebookApp(() => {throw new DOMException('Frame failed','SecurityError');},
+    {valid:()=>true}), /could not be loaded/);
 });
