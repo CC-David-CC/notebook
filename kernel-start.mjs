@@ -25,7 +25,7 @@ export async function waitForNotebookApp(getApp, {valid, timeout = 90000, now = 
     try {
       app = getApp();
     } catch (error) {
-      if (error.name !== 'SecurityError') throw error;
+      if (error?.name !== 'SecurityError') throw error;
       // A browser navigation error can leave an inaccessible document in the frame.
       throw Error('The Notebook editor could not be loaded.');
     }

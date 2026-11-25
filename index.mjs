@@ -11,7 +11,9 @@ export function mount(host) {
    const hadFocus=body.contains(document.activeElement);
    attempt.dispose();
    host.w.launchContext=launch;
-   const message=host.ui.make('div','app-status notebook-start-message','Notebook could not start. '+error.message);
+   const detail=error?.message;
+   const text=detail ? 'Notebook could not start. '+detail : 'Notebook could not start.';
+   const message=host.ui.make('div','app-status notebook-start-message',text);
    message.setAttribute('role','status');
    const retry=host.ui.textButton('Retry Notebook',begin);
    const actions=host.ui.make('div','notebook-start-actions');
