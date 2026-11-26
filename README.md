@@ -8,6 +8,10 @@ measurements. Run it with Shift+Enter or the notebook's Run button. The
 collapsible getting-started guide explains this and the storage boundary. The
 file chooser defers automatic saves until a selection or cancellation finishes.
 
+The phone view puts **Open notebook**, **Save notebook**, and **Data files**
+next to the cell controls. Use **Data files** to import a dataset or save a
+Python-generated file. Use **More controls** for Jupyter's menus and toolbars.
+
 Use Jupyter’s **File → Open from My files** for a saved `.ipynb`, or **File → Save to My files** to save it. Enter a path under My files when prompted. The original Jupyter file actions operate on temporary internal working copies; they do not replace saving to My files. If the desktop cannot integrate with Jupyter’s menu, its separate file controls remain available. The notebook is saved to the account's browser storage and
 then synchronized with the server. After the first save, changes are saved
 automatically while the window remains open, including edits made during the first save. Check the status for save errors
