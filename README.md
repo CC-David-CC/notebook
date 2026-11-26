@@ -11,6 +11,10 @@ file chooser defers automatic saves until a selection or cancellation finishes.
 The phone view puts **Open notebook**, **Save notebook**, and **Data files**
 next to the cell controls. Use **Data files** to import a dataset or save a
 Python-generated file. Use **More controls** for Jupyter's menus and toolbars.
+New notebooks start with the suggested name `Notebook.ipynb`. A name such
+as `My lesson` saves as `/My lesson.ipynb` in My files. Add an explicit
+`.light.py` or `.percent.py` extension to save Python text. When saving
+changes to an existing notebook, the app uses its current name and format.
 
 Use Jupyter’s **File → Open from My files** for a saved `.ipynb`, or **File → Save to My files** to save it. Enter a path under My files when prompted. The original Jupyter file actions operate on temporary internal working copies; they do not replace saving to My files. If the desktop cannot integrate with Jupyter’s menu, its separate file controls remain available. The notebook is saved to the account's browser storage and
 then synchronized with the server. After the first save, changes are saved
