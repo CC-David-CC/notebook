@@ -77,14 +77,7 @@ function mountNotebook(host,body,onStartupFailure) {
  const guide=make('details','notebook-guide'),summary=document.createElement('summary'),guideText=document.createElement('p');summary.textContent='Getting started and Python environments';guideText.textContent='Run the example cell with Shift+Enter or the Run button, then change the measurements and run it again. File → Save to My files stores a Python text notebook in My files by default. Text notebooks save code and text, not output or notebook metadata; save as .ipynb and use Save to My files after running to keep output and metadata. Running alone does not save output. Unsaved changes and output can be lost on a crash or window close;  Jupyter’s own save keeps its temporary working copy. File → Import data from My files copies a data file into this notebook’s temporary Python workspace and shows its working name. File → Save working file to My files copies a Python output back, including files in folders such as results/plot.svg. These are separate copies, not automatic synchronization. Choose the same working filename when importing on another device so your Python code can use it unchanged. Working files stay browser-local until removed or browser data is cleared; Python outputs need explicit saving to My files. Python here runs in your browser; native Linux programs and subprocesses require the separate Linux Terminal. Use your Files home in Linux Terminal for shared workspace documents.';guide.append(summary,guideText);
  let disposed=false,manager=null,storageName=null,localPath='codi-'+crypto.randomUUID()+'.ipynb',version=null,linkedPath=null,busy=false,startupTimer,starting=true,linkedWidget=null,debounce=null,changing=false,unwatchFile=()=>{},fileWatchSerial=0,fileCheckSerial=0,removeMenu=()=>{},menuApp=null,choosingSave=false,recoveryTarget=null,saveRetryAttempts=0,autoSaveSuspended=false;const conversion=createJupytextClient(host.signal);let lastSource=null,savedSource=null,textMetadataAtRisk=false;const state=w.notebook??={dirty:false},ownedPaths=new Set([localPath]);
  const valid=()=>!disposed&&!host.signal.aborted&&body.isConnected&&owner===workspaceOwner(),tell=s=>{if(valid())status.textContent=s;};
- function updateTitle(p){
-  const filename=p.split('/').pop();
-  if(linkedWidget){linkedWidget.title.label=filename;linkedWidget.title.caption=filename;}
-  const title=filename+' — Python Notebook';
-  if(w.title===title)return;
-  w.title=title;
-  host.desktop.render();
- }
+ function updateTitle(p){const title=p.split('/').pop()+' — Python Notebook';if(w.title===title)return;w.title=title;host.desktop.render();}
  function pendingSave(){const wasDirty=state.dirty,revision=state.revision||0;let committed=false;state.dirty=true;return {committed(){committed=true;},finish(){if(!committed&&(state.revision||0)===revision)state.dirty=wasDirty;}};}
  async function discardChanges(message){const before=state.revision||0;try{const confirmed=await host.ui.confirm(message,{title:'Unsaved changes',confirmLabel:'Discard changes',cancelLabel:'Keep editing',danger:true,signal:host.signal});if(!confirmed||!valid())return false;if((state.revision||0)!==before){tell('The notebook changed while the confirmation was open. Try again.');return false;}return true;}catch(e){if(valid())tell('Could not confirm opening: '+e.message);return false;}}
  function watchFile(c,p){unwatchFile();const serial=++fileWatchSerial;fileWarning.hidden=true;fileWarning.textContent='';const check=async()=>{const expected=version,checkId=++fileCheckSerial;if(!valid()||!c.valid()||!expected||linkedPath!==p)return;let message='';try{const f=await c.files.stat(p);if(f.status==='conflict')message='This notebook has conflicting copies. Your current notebook remains open; resolve the conflict in Files.';else if(f.version!==expected)message='The saved notebook changed. Your current notebook remains open; save a copy or reopen it.';}catch{message='The saved notebook is unavailable. Your current notebook remains open.';}if(valid()&&c.valid()&&serial===fileWatchSerial&&checkId===fileCheckSerial&&linkedPath===p&&version===expected){fileWarning.textContent=message;fileWarning.hidden=!message;}};unwatchFile=c.files.subscribe(check);queueMicrotask(check);}
@@ -172,8 +165,6 @@ function mountNotebook(host,body,onStartupFailure) {
    await waitForPython(widget,{valid});
    if(!valid()) return;
    watch(widget);
-   widget.title.label=path.value.split('/').pop();
-   widget.title.caption=widget.title.label;
    retry.disabled=false;
    tell(launchError?launchError+' A new example is ready; save it to My files.':
     'Browser Python notebook ready. Run the example, or edit it. Use File → Save to My files to save.');
